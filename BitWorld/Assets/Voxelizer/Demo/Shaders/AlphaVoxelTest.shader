@@ -3,18 +3,20 @@
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
+		_Glossiness ("Smoothness", Range(0,1)) = 0.5
+		_Metallic ("Metallic", Range(0,1)) = 0.0
 
         _Range ("Range", Vector) = (-10, 10, 0, 0)
         _Threshold ("Threshold", Range(0.0, 1.0)) = 0.0
 	}
 
 	SubShader {
-		Tags { "RenderType"="Opaque" }
+		Tags { "Queue" = "Transparent" }
 		LOD 200
 
 		CGPROGRAM
 
-		#pragma surface surf Lambert alpha vertex:vert
+		#pragma surface surf Standard alpha:fade vertex:vert
 
 		#pragma target 3.0
 
@@ -24,7 +26,8 @@
 			float2 uv_MainTex;
 		};
 
-		
+		half _Glossiness;
+		half _Metallic;
 		fixed4 _Color;
 
         float2 _Range;
@@ -39,8 +42,10 @@
 			v.vertex.xyz = lerp(v.vertex.xyz, v.tangent.xyz, t);
 		}
 
-		void surf (Input IN, inout SurfaceOutput o) {
+		void surf (Input IN, inout SurfaceOutputStandard o) {
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			o.Metallic = _Metallic;
+			o.Smoothness = _Glossiness;
 			o.Albedo = c.rgb;
 			o.Alpha = c.a;
 		}
