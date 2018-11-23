@@ -8,6 +8,8 @@
 
         _Range ("Range", Vector) = (-10, 10, 0, 0)
         _Threshold ("Threshold", Range(0.0, 1.0)) = 0.0
+		_EmissionColor("Emission Color", Color) = (1,1,1,1)
+		_EmissionStrength("Emission Strength", float) = 1
 	}
 
 	SubShader {
@@ -32,6 +34,8 @@
 
         float2 _Range;
         half _Threshold;
+		half4 _EmissionColor;
+		float _EmissionStrength;
 
 		UNITY_INSTANCING_BUFFER_START(Props)
 		UNITY_INSTANCING_BUFFER_END(Props)
@@ -48,6 +52,7 @@
 			o.Smoothness = _Glossiness;
 			o.Albedo = c.rgb;
 			o.Alpha = c.a;
+			o.Emission = _EmissionColor * _EmissionStrength;
 		}
 
 		ENDCG
