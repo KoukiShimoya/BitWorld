@@ -19,7 +19,6 @@ public class AIMove : MonoBehaviour {
         Vector3 dir = this.gameObject.transform.forward;
         Vector3 newVerDir = dir.normalized;
         Vector3 newHorDir = this.gameObject.transform.right.normalized;
-        Debug.DrawRay(this.gameObject.transform.position, dir, Color.red);
         Vector3 moveHorizontal = new Vector3(newHorDir.x * x, newHorDir.y * x, newHorDir.z * x);
         Vector3 moveVerticalVec = new Vector3(newVerDir.x * z, newVerDir.y * z, newVerDir.z * z);
         Vector3 moveVec = moveHorizontal + moveVerticalVec;
@@ -29,7 +28,6 @@ public class AIMove : MonoBehaviour {
         {
             if (rigidbody.velocity.magnitude < velocity)
             {
-                Debug.Log(rigidbody.velocity.magnitude);
                 rigidbody.AddForce(moveVec);
             }
         }
