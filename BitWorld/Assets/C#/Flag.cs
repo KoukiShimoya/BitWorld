@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//やること
+//jammer付近でintentionを上げる
+//AstroPosition設定
+//音、テキスト付ける
+//最後の入力
 public class Flag : MonoBehaviour {
     public enum State
     {
@@ -118,7 +124,7 @@ public class Flag : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.DrawRay(ray.origin, ray.direction * 1, Color.red);
+            Debug.DrawRay(ray.origin, ray.direction * 2, Color.red);
             RaycastHit hit = new RaycastHit();
             if (Physics.Raycast(ray, out hit, 1))
             {
@@ -221,9 +227,11 @@ public class Flag : MonoBehaviour {
         AstroMove(astro.transform.position, AstroPosition[0], State.body1);
         if(hitObj.name == "body_button_R1")
         {
+            Debug.Log("R1");
             if (!bodyR1) { bodyR1 = true; }
         }else if(hitObj.name == "body_button_R2")
         {
+            Debug.Log("R2");
             if(!bodyR2) { bodyR2 = true; }
         }
 
@@ -358,7 +366,7 @@ public class Flag : MonoBehaviour {
 
     void AstroMove(Vector3 from, Vector3 to, State nextState)
     {
-        Vector3 moveVec = from - to;
+        Vector3 moveVec = to - from;
         moveVec.Normalize();
         moveVec *= 1;
         astro.transform.position = (from + moveVec / 30);
