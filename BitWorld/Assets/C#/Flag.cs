@@ -154,8 +154,8 @@ public class Flag : MonoBehaviour {
 
     void AwakeStart()
     {
-        text.text = "飛行士：おい、起きろ！緊急事態だ！脱出するぞ！";
-        text_01.text = "";
+        text.text = "飛行士：おい、起きろ！緊急事態だ！脱出するぞ！" + "\n" + "a";
+        text_01.text = "a";
         awake_time += Time.deltaTime;
         if(awake_time > 2f)
         {
