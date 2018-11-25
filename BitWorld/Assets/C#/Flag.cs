@@ -46,13 +46,15 @@ public class Flag : MonoBehaviour {
     private GlitchFx glitch;
     [SerializeField] private GameObject astro;
     private heapButton[] heapButtons = new heapButton[9];
-    private float collTime = 0f; float door_waitTime = 0f; float awake_time = 0f; float tobody1_time = 0f;
+    private float collTime = 0f; float door_waitTime = 0f; float awake_time = 0f; float tobody1_time = 0f; float finish_time = 0f;
     [SerializeField] Vector3[] AstroPosition = new Vector3[6];
     private bool bodyL1 = false; private bool bodyL2 = false; private bool bodyR1 = false; private bool bodyR2 = false; private bool hasLench = false; bool openPanel = false;
     private bool wingR_edge = false; bool wing_L_corner = false;
     [SerializeField] private InputField inputField;
     private Text text; Text text_01;
     private AudioSource[] sounds;
+    private Image panelImage;
+    private GameObject title; GameObject name;
 
 	// Use this for initialization
 	void Start () {
@@ -68,6 +70,10 @@ public class Flag : MonoBehaviour {
         text_01 = GameObject.Find("Text_01").GetComponent<Text>();
         sounds = GetComponents<AudioSource>();
         inputField.gameObject.SetActive(false);
+        panelImage = GameObject.Find("Panel").GetComponent<Image>();
+        panelImage.gameObject.SetActive(false);
+        title = GameObject.Find("title"); name = GameObject.Find("name");
+        title.SetActive(false); name.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -126,7 +132,7 @@ public class Flag : MonoBehaviour {
                 Head(hitObj);
                 break;
             case State.finish:
-
+                Finish();
                 break;
         }
         collReset();
@@ -149,7 +155,7 @@ public class Flag : MonoBehaviour {
     void AwakeStart()
     {
         text.text = "飛行士：おい、起きろ！緊急事態だ！脱出するぞ！";
-        text_01.text = "awake";
+        text_01.text = "";
         awake_time += Time.deltaTime;
         if(awake_time > 2f)
         {
@@ -160,7 +166,7 @@ public class Flag : MonoBehaviour {
     void TailButtonPush(GameObject hitObj)
     {
         text.text = "宇宙飛行士：ボタンを押して扉を開けてくれ";
-        text_01.text = "tail";
+        text_01.text = "";
         if (hitObj == null) { return; }
         if(hitObj.name == "tail_button" || hitObj.name == "tail_button_push")
         {
@@ -179,7 +185,7 @@ public class Flag : MonoBehaviour {
     void BeforeCharge()
     {
         text.text = "宇宙飛行士：回線がショートしているな、扉の前にいってくれ";
-        text_01.text = "beforeCharge";
+        text_01.text = "";
         if (colliderObj == null) { return; }
         if(colliderObj.name == "ChargePoint")
         {
@@ -193,7 +199,7 @@ public class Flag : MonoBehaviour {
         Vector3 cameraPos = this.transform.position;
         AstroMove(astroPos, cameraPos, State.charging);
         text.text = "宇宙飛行士：ちょっと待ってろ";
-        text_01.text = "waitCharge";
+        text_01.text = "";
     }
 
     void Charging()
@@ -206,14 +212,14 @@ public class Flag : MonoBehaviour {
             state = State.afterCharge;
         }
         text.text = "宇宙飛行士：よし、直ってきたな";
-        text_01.text = "charging";
+        text_01.text = "";
     }
 
     void AfterCharge(GameObject hitObj)
     {
         text.text = "宇宙飛行士：扉をハックして開けてくれ" + "\n" +
             "右下の9つのボタンを Z を描く順で押せば開くはずだ";
-        text_01.text = "afterCharge";
+        text_01.text = "";
         if (hitObj == null) { return; }
         if(!heapButtons[0].boolean && !heapButtons[1].boolean && !heapButtons[2].boolean && !heapButtons[3].boolean && !heapButtons[4].boolean && !heapButtons[5].boolean && !heapButtons[6].boolean && !heapButtons[7].boolean && !heapButtons[8].boolean)
         {
@@ -268,7 +274,7 @@ public class Flag : MonoBehaviour {
     {
         tobody1_time += Time.deltaTime;
         text.text = "宇宙飛行士：いいぞ！船の先端にSOS発信機がある。" + "\n" + "無線室への扉を開けるには、太陽光パネルを修理する必要があるな";
-        text_01.text = "tobody1";
+        text_01.text = "";
         if(tobody1_time > 10f)
         {
             state = State.body1;
@@ -278,7 +284,7 @@ public class Flag : MonoBehaviour {
     void Body1(GameObject hitObj)
     {
         text.text = "宇宙飛行士：次は右の翼の太陽光パネルを修理するぞ！" + "\n" + "扉を開けるから、電源ボックスを押して電気を入れてくれ";
-        text_01.text = "body1";
+        text_01.text = "";
         AstroMove(astro.transform.position, AstroPosition[0], State.body1);
         if (hitObj == null) { return; }
         if(hitObj.name == "body_button_R1")
@@ -305,7 +311,7 @@ public class Flag : MonoBehaviour {
     void Lench(GameObject hitObj)
     {
         text.text = "宇宙飛行士：いいぞ、ん？" + "\n" + "修理用レンチがあるはずだから探してきてくれないか？";
-        text_01.text = "lench";
+        text_01.text = "";
         AstroMove(astro.transform.position, AstroPosition[1], State.lench);
         if (hasLench)
         {
@@ -344,13 +350,13 @@ public class Flag : MonoBehaviour {
             AstroMove(astro.transform.position, AstroPosition[3], State.body2);
         }
         text.text = "宇宙飛行士：ありがとう。ここからは磁場が強い、俺が作業するから待ってろ";
-        text_01.text = "wingR";
+        text_01.text = "";
     }
 
     void Body2(GameObject hitObj)
     {
         text.text = "宇宙飛行士：よし！右のパネルは治ったぞ" + "\n" + "同じように左の扉も開けてくれ";
-        text_01.text = "body2";
+        text_01.text = "";
         if (hitObj == null) { return; }
         if (hitObj.name == "body_button_L1")
         {
@@ -385,13 +391,13 @@ public class Flag : MonoBehaviour {
             Destroy(GameObject.Find("L_collider"));
         }
         text.text = "宇宙飛行士：よし、こっちも直してくる";
-        text_01.text = "wingLbefore";
+        text_01.text = "";
     }
 
     void WingLOpening(GameObject hitObj)
     {
         text.text = "宇宙飛行士：うわぁぁぁぁぁぁ。窓が開いている！！！" + "\n" + "中のボタンを押して閉めてくれぇぇぇ";
-        text_01.text = "wingLopening";
+        text_01.text = "";
         if (hitObj == null) { return; }
         if (hitObj.name == "wing_button")
         {
@@ -404,7 +410,7 @@ public class Flag : MonoBehaviour {
     void WingLAfter()
     {
         text.text = "宇宙飛行士：助かった。" + "\n" + "あとは俺が作業するから、外で待っていてくれ";
-        text_01.text = "wingLafter";
+        text_01.text = "";
         if (!wing_L_corner)
         {
             AstroMove(astro.transform.position, AstroPosition[3], State.wingL_after);
@@ -438,11 +444,13 @@ public class Flag : MonoBehaviour {
     void Head(GameObject hitObj)
     {
         text.text = "宇宙飛行士：よし、最後だ。" + "\n" + "SOSを打ってくれ";
+        text_01.text = "S:01010011, O:01001111";
         if (openPanel)
         {
 
             if (inputField.text == "010100110100111101010011")
             {
+                inputField.gameObject.SetActive(false);
                 state = State.finish;
             }
         }
@@ -454,6 +462,28 @@ public class Flag : MonoBehaviour {
             openPanel = true;
         }
         
+    }
+
+    void Finish()
+    {
+        text.text = "やった！脱出するぞ！";
+        text_01.text = "";
+        finish_time += Time.deltaTime;
+        if(finish_time > 2f)
+        {
+            if (!panelImage.gameObject.activeSelf) { panelImage.gameObject.SetActive(true); }
+            Color color = panelImage.color;
+            if (color.a < 1)
+            {
+                color.a += 0.02f;
+                panelImage.color = color;
+            }
+            else
+            {
+                title.SetActive(true);
+                name.SetActive(true);
+            }
+        }
     }
 
     void AstroMove(Vector3 from, Vector3 to, State nextState)
